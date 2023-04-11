@@ -6,36 +6,18 @@ from copy import deepcopy
 import csv
 from datetime import datetime, date, time, timedelta
 
-############################
+############# Header instructons ###############
 
 header = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 dep = "BSCS"
-sec = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R"]
-faculty = {"A":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "B":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           
-           "D":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "E":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "B":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "F":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "G":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "H":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "I":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "J":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "K":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "L":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "M":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-            "N":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "O":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
-           "P":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "Q":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-           "R":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"},
-
-           "C":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"}}
-subjects = [["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Calculus",0,3],["-",0,40-21]]
-
+sec = ["A","B","C"]
+faculty = {"A":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","Physics":"S4","FOCP":"S5","IoT":"S6","PKST":"S7","Calculus":"S8"},
+           "B":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","Physics":"S4","FOCP":"S5","IoT":"S6","PKST":"S7","Calculus":"S8"},
+           "C":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","Physics":"S10","FOCP":"S11","IoT":"S12","PKST":"S7","Calculus":"S13"}}
+subjects = [["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["Physics",0,3],["FOCP",0,3],["IoT",0,3],["PKST",0,2],["Calculus",0,3],["-",0,40-21]]
+faculty = {}
 faculty_table = {}
-############################
+########### Consraints variable #################
 
 days = len(header)
 T_slots = 8
@@ -44,7 +26,7 @@ lecture_dur = 60
 start_time = [9,00,00]
 Timetable = []
 
-############################
+############ Create time slots ################
 
 Time = []
 timeobj= time(start_time[0],start_time[1],start_time[2])
@@ -52,14 +34,48 @@ for x in range(T_slots):
     Time.append(str(timeobj)+"-"+str((datetime.combine(date.today(), timeobj) + timedelta(minutes=lecture_dur)).time()))
     timeobj = (datetime.combine(date.today(), timeobj) + timedelta(minutes=lecture_dur)).time()
 
-############################
+########### Make initial timetable list #################
 
 def emptytimetable():
     t = [[0 for x in range(days)] for x in range(T_slots-1)]
     t.insert(break_slot-1,["-" for x in range(days)])
     return t
 
-############################
+########## Take input from user ########
+def take_input():
+    global dep,T_slots,break_slot,lecture_dur,start_time,subjects,credit,sec,faculty
+    dep = input("Enter name of department: ")
+    T_slots = int(input("Enter number of time slots: "))
+    break_slot = int(input("Enter the break slot number: "))
+    lecture_dur = int(input("Enter lecture duration: "))
+    start_time = [int(x) for x in input("Enter start time: ").split(':')]
+    sec = input("Enter name of sections seperated by comma: ").split(',')
+    subjects_list = input("Enter subjects seperated by comma: ").split(',')
+    credit = [int(x) for x in input("Enter repective credits seperated by comma: ").split(',')]
+    subjects = [[subject,0,cr] for subject,cr in zip(subjects_list+["-"],credit+[T_slots*days-sum(credit)])]
+    faculty = dict()
+    for x in sec:
+        temp = dict()
+        for y in subjects_list:
+            temp[y] = input("Enter name of teacher for "+y+" of section "+x+": ")
+        faculty[x] = temp
+        
+    
+take_input()
+
+############### Check if the teacher has a lecture #############
+
+def teacher(sub,row,col,sec):
+
+    if row>1 and faculty_table[faculty[sec][sub]][row-1][col] != 0 and faculty_table[faculty[sec][sub]][row-2][col] != 0:
+        return False
+    if faculty_table[faculty[sec][sub]][row][col] != 0:
+        return False
+    else:
+        faculty_table[faculty[sec][sub]][row][col] = sec
+        return True
+    
+################# timetable generator function ###########
 
 def generator(timetable,subj, row, col, sec):
    
@@ -78,46 +94,20 @@ def generator(timetable,subj, row, col, sec):
         if sub[1] < sub[2]:
             if sub[0] != "-":
                 if teacher(sub[0],row,col,sec):
-                    timetable[row][col] = sub[0]
                     sub[1] += 1
+                    timetable[row][col] = sub[0]
                     if generator(timetable,subj, row, col + 1, sec):
                         return True
             else:
-                    timetable[row][col] = sub[0]
                     sub[1] += 1
+                    timetable[row][col] = sub[0]
                     if generator(timetable,subj, row, col + 1, sec):
                         return True
-
+        
         timetable[row][col] = 0
     return False
 
-############################
-
-def teacher(sub,row,col,sec):
-    if len(faculty_table) == 0: faculty_table.update({faculty[sec][sub] : emptytimetable()})
-    
-    if faculty[sec][sub] in faculty_table:
-        if row>1 and faculty_table[faculty[sec][sub]][row-2][col] != 0 and faculty_table[faculty[sec][sub]][row-1][col] != 0:
-            return False
-        if faculty_table[faculty[sec][sub]][row][col] != 0:
-            return False
-        else:
-            faculty_table[faculty[sec][sub]][row][col] = sec
-            return True
-    else:
-        faculty_table[faculty[sec][sub]] = emptytimetable()
-        teacher(sub,row,col,sec)
-    
-    
-############################
-
-def new_conflict(val,x,y,sec):
-    for table in Timetable:
-        if val == table[x][y] and val != "-":
-            return False
-    return True
-
-#############################
+############## Generate first timetable ###############
 
 def sgen(table):
     subs = deepcopy(subjects)
@@ -131,9 +121,8 @@ def sgen(table):
                 if table[x][y] == 0:
                     table[x][y]=sub[0]
                     sub[1] += 1   
-                    if teacher(sub[0],x,y,"A"):
-                        pass
-                break
+                    teacher(sub[0],x,y,"A")
+                    break
             
     
     for x in range(len(table)):
@@ -142,41 +131,14 @@ def sgen(table):
                 table[x][y] = "-"
     return table
 
-            
-    
-#     while True:
-#         for x in range(T_slots-2,-1,-1):
-#             for y in range(days):
-#                 while True:
-#                     s = random.randint(0,len(subs)-1)
-#                     if subs[s][0] != "-":
-#                         faculty_table.update({faculty["A"][subs[s][0]] : emptytimetable()})
-
-#                     if timetable[x][y] != 0: break
-                    
-#                     if "Lab" in subs[s][0] and subs[s][1] < subs[s][2]:
-#                         if x==1 or x==4:
-#                             timetable[x][y] = timetable[x+1][y] = timetable[x+2][y] = subs[s][0]
-#                             subs[s][1] = 3
-#                             break
-#                     elif "Lab" not in subs[s][0] and subs[s][1] < subs[s][2]:
-#                         timetable[x][y] = subs[s][0]
-#                         subs[s][1] += 1
-#                         if subs[s][0] != "-":
-#                             faculty_table[faculty["A"][subs[s][0]]][x][y] = sec
-
-#                         break
-
-#         sum = 0
-#         for i in range(len(subs)-1):
-#             sum += subs[i][1]
-#         if sum == 21:
-#             return timetable
-
 ##################### Create Timetable List #####################
 
+for x in faculty.keys():
+    temp = dict()
+    for y in faculty[x].keys():
+        faculty_table[faculty[x][y]] = emptytimetable()
 Timetable.append(sgen(emptytimetable()))
-
+    
 for x in range(1,len(sec)):
     temp = deepcopy(subjects)
     Timetable.append(emptytimetable())
@@ -244,13 +206,13 @@ with open('Teachers.csv', 'w') as file:
     writer = csv.writer(file)
     writer.writerow([])
     for timetables in faculty_table:
-        writer.writerow(["","","",dep+" Timetable of "+timetables])
+        writer.writerow(["","",dep+" Timetable of "+timetables])
         writer.writerow(["","Dates"]+header)
         for i in range(len(faculty_table[timetables])):
             writer.writerow(["",Time[i]]+["Free" if x == 0 else x for x in faculty_table[timetables][i]])
         writer.writerow([])
 
-########################################################################
+############ Makeup lecture scheduling GUI function ############
 def makeup_schedule(clas,makes):
     makeup = emptytimetable()
     for row in range(T_slots):
@@ -288,14 +250,14 @@ def makeup_schedule(clas,makes):
             e.grid(row=i+2, column=j+1)
 
     root.mainloop()
-#################################################
+################# No selection Error handling ###################
 def select(clas,makes):
     if clas == '' or makes == '':
         messagebox.showerror("Selection Error","Please select proper values")
     else:
         makeup_schedule(clas,makes)
     
-#################################################
+################### Prompting input for makup ##################
 def askscheduler():
     root= Tk()
     selected_sub = StringVar()
@@ -310,7 +272,7 @@ def askscheduler():
     label.pack(fill=X, padx=5, pady=5)
 
     # create a combobox
-    sub_cb = ttk.Combobox(root,values=[sub[0] for sub in subjects], textvariable=selected_sub)
+    sub_cb = ttk.Combobox(root,values=[sub[0] for sub in subjects][:-1], textvariable=selected_sub)
     sub_cb.current(0)
     # prevent typing a value
     sub_cb['state'] = 'readonly'
@@ -332,14 +294,11 @@ def askscheduler():
     # place the widget
     sec_cb.pack(fill=X, padx=5, pady=5)
 
-    Button(root, text= "Create", command=lambda: select(selected_sec.get(),selected_sub.get())).pack(fill=X, padx=5, pady=5)
+    Button(root, text= "Find", command=lambda: select(selected_sec.get(),selected_sub.get())).pack(fill=X, padx=5, pady=5)
 
     root.mainloop()
 
-#################################################
-    
-if messagebox.askyesno(title='Scheduler', message='Do you want to schedule makeup?'):
-    askscheduler()
-    
+############# Ask for confirmation ####################
+if messagebox.askyesno(title='Scheduler', message='Do you want to schedule a makeup class?'): askscheduler()
 messagebox.showinfo('Thank You','This Scheduling system is made by Saim')
-##################################################
+######################### END ##########################
