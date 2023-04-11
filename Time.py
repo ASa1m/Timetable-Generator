@@ -4,9 +4,11 @@ from datetime import datetime, date, time, timedelta
 
 header = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 dep = "BSCS"
-sec = ["A","B","C","D"]
-faculty = [""]
-subjects = [["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Calculus",0,3],["-",0,50]]
+sec = ["A","B","C","D","E","F"]
+faculty = {"A":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
+           "B":{"Com Skills":"S1","Discrete":"S2","ICT":"S3","ICT Lab":"S4","FOCP":"S5","FOCP Lab":"S6","PKST":"S7","Calculus":"S8"},
+           "C":{"Com Skills":"S1","Discrete":"S2","ICT":"S9","ICT Lab":"S10","FOCP":"S11","FOCP Lab":"S12","PKST":"S7","Calculus":"S13"}}
+subjects = (["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Calculus",0,3],["-",0,50])
 
 ############################
 days = len(header)
@@ -14,6 +16,8 @@ T_slots = 8
 break_slot = 5
 lecture_dur = 60
 start_time = [9,00,00]
+Timetable = []
+
 ############################
 
 Time = []
@@ -29,7 +33,41 @@ def emptytimetable():
 
 ############################
 
-Timetable = []
+def generator(timetable,subj, row, col):
+   
+    if (row == T_slots - 1 and col == days):
+        return True
+       
+
+    if col == days:
+        row += 1
+        col = 0
+ 
+
+    if timetable[row][col] != 0:
+        return generator(timetable,subj, row, col + 1)
+    for sub in subj:
+
+        if sub[1] < sub[2] and new_conflict(sub[0],row,col):
+
+                
+            timetable[row][col] = sub[0]
+            sub[1] += 1
+
+            if generator(timetable,subj, row, col + 1):
+                return True
+ 
+
+        timetable[row][col] = 0
+    return False
+############################
+def new_conflict(val,x,y):
+    for table in Timetable:
+        if val == table[x][y] and val != "-":
+            return False
+    return True
+
+####################################################################################################
 
 def gen(timetable):
     
@@ -60,14 +98,14 @@ def gen(timetable):
             return timetable
         
 
-
+#######################################
 def conflict(table,temp):
     for x in range(len(table)):
         for y in range(len(table[0])):
             if temp[x][y] == table[x][y] and temp[x][y] != "-":
                 return True
     return False
-
+#######################################
 def Table_add():
     global Timetable
     if len(Timetable) == 0 :
@@ -83,12 +121,16 @@ def Table_add():
             Timetable.append(temp)
             return    
 
-#Timetable[0] = gen(emptytimetable())
-
+##########################################
     
 for x in range(len(sec)):
-    
-    Table_add()
+    temp = [["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Calculus",0,3],["-",0,50]]
+    #Table_add()
+    Timetable.append(emptytimetable())
+    Timetable[x].insert(break_slot-1,["-" for x in range(days)])
+
+    generator(Timetable[x],temp, 0, 0)
+
 
 ################################
 itr_sec = 0
