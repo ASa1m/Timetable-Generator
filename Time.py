@@ -4,10 +4,12 @@ from datetime import datetime, date, time, timedelta
 
 header = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 dep = "BSCS"
-sec = ["A","B","C"]
+sec = ["A","B","C","D"]
+faculty = [""]
+subjects = [["Com Skills",0,2],["Discrete",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Calculus",0,3],["-",0,50]]
 
 ############################
-days = 5
+days = len(header)
 T_slots = 8
 break_slot = 5
 lecture_dur = 60
@@ -27,13 +29,12 @@ def emptytimetable():
 
 ############################
 
-#Timetable = [[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]]
-Timetable = [[]]
+Timetable = []
 
 def gen(timetable):
     
     while True:
-        subs = [["Com",0,2],["Dis",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Cal",0,3],["-",0,50]]
+        subs = subjects
         for x in range(T_slots-2,-1,-1):
             for y in range(days):
                 while True:
@@ -64,27 +65,32 @@ def conflict(table,temp):
     for x in range(len(table)):
         for y in range(len(table[0])):
             if temp[x][y] == table[x][y] and temp[x][y] != "-":
-                return False
-    return True
+                return True
+    return False
 
 def Table_add():
     global Timetable
+    if len(Timetable) == 0 :
+        Timetable.append(gen(emptytimetable()))
+        return
     while True:
         temp = gen(emptytimetable())
 
         for table in Timetable:
             if conflict(table,temp):
-                Timetable.append(temp)
-                return    
+                break
+        else:
+            Timetable.append(temp)
+            return    
 
-Timetable[0] = gen(emptytimetable())
+#Timetable[0] = gen(emptytimetable())
 
     
-for x in range(2):
+for x in range(len(sec)):
     
     Table_add()
 
-
+################################
 itr_sec = 0
 for timetables in Timetable:
     print("-"*100)
