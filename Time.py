@@ -6,23 +6,36 @@ header = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
 dep = "BSCS"
 sec = ["A","B","C"]
 
+############################
+days = 5
+T_slots = 8
+break_slot = 5
+lecture_dur = 60
+start_time = [9,00,00]
+############################
+
 Time = []
-timeobj= time(9,00,00)
-for x in range(8):
-    Time.append(str(timeobj)+"-"+str((datetime.combine(date.today(), timeobj) + timedelta(minutes=60)).time()))
-    timeobj = (datetime.combine(date.today(), timeobj) + timedelta(minutes=60)).time()
+timeobj= time(start_time[0],start_time[1],start_time[2])
+for x in range(T_slots):
+    Time.append(str(timeobj)+"-"+str((datetime.combine(date.today(), timeobj) + timedelta(minutes=lecture_dur)).time()))
+    timeobj = (datetime.combine(date.today(), timeobj) + timedelta(minutes=lecture_dur)).time()
+
+############################
 
 def emptytimetable():
-    return [[0 for x in range(5)] for x in range(7)]
+    return [[0 for x in range(days)] for x in range(T_slots-1)]
 
-Timetable = [[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]]
+############################
+
+#Timetable = [[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]]
+Timetable = [[]]
 
 def gen(timetable):
     
     while True:
-        subs = [["Com",0,2],["Dis",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Cal",0,3],["-",0,20]]
-        for x in range(6,-1,-1):
-            for y in range(5):
+        subs = [["Com",0,2],["Dis",0,3],["ICT",0,2],["ICT Lab",0,3],["FOCP",0,3],["FOCP Lab",0,3],["PKST",0,2],["Cal",0,3],["-",0,50]]
+        for x in range(T_slots-2,-1,-1):
+            for y in range(days):
                 while True:
                     s = random.randint(0,len(subs)-1)
                     if timetable[x][y] != 0: break
@@ -38,7 +51,7 @@ def gen(timetable):
 
                     
                     
-        timetable.insert(4,["-","-","-","-","-"])
+        timetable.insert(break_slot-1,["-" for x in range(days)])
         sum = 0
         for i in range(len(subs)-1):
             sum += subs[i][1]
@@ -59,7 +72,6 @@ def Table_add():
     while True:
         temp = gen(emptytimetable())
 
-        
         for table in Timetable:
             if conflict(table,temp):
                 Timetable.append(temp)
@@ -75,8 +87,8 @@ for x in range(2):
 
 itr_sec = 0
 for timetables in Timetable:
-    print()
-    print ("\t\t\t\t",dep,"Timetable of Section",sec[itr_sec])
+    print("-"*100)
+    print ("|",(dep+" Timetable of Section "+sec[itr_sec]).center(97),"|")
     print("-"*100)
     print("Dates".center(20),end='|')
     for x in header:
