@@ -44,5 +44,8 @@ Files
 timetable_generator.py: The main Python script for the Time Table Generator.
 Table.csv: CSV file containing class timetables.
 Teachers.csv: CSV file containing faculty timetables.
+
+### Automation
+User imput can be automated using the `Automate.py` script which uses `pyautogui` to input text
 ## Acknowledgements
 This project was developed by [ASa1m](https://github.com/ASa1m). Feel free to contribute or provide feedback. Enjoy efficient class scheduling!
